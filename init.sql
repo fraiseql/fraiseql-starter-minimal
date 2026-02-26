@@ -35,7 +35,7 @@ DECLARE
     v_identifier TEXT;
     v_id         UUID;
 BEGIN
-    v_identifier := lower(regexp_replace(p_name, '[^a-zA-Z0-9]+', '-', 'g'));
+    v_identifier := trim('-' FROM lower(regexp_replace(p_name, '[^a-zA-Z0-9]+', '-', 'g')));
     INSERT INTO tb_item (identifier, name, description)
     VALUES (v_identifier, p_name, p_description)
     RETURNING id INTO v_id;

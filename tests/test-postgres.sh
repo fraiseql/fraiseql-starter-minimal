@@ -72,6 +72,12 @@ check_exists "fn_create_item result in v_item" \
 check_exists "fn_create_item identifier generated" \
     "SELECT COUNT(*) FROM v_item WHERE id = '$new_id' AND identifier = 'ci-test-item'"
 
+if echo "$new_id" | grep -qE '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'; then
+    pass "fn_create_item id is valid UUID"
+else
+    fail "fn_create_item id is not a valid UUID: $new_id"
+fi
+
 echo "── Cleanup ─────────────────────────────────────────────────────────────"
 $PSQL -c "DELETE FROM tb_item WHERE id = '$new_id'"
 pass "cleanup done"

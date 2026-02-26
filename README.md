@@ -106,7 +106,7 @@ type Item {
 }
 
 type Query {
-  items(limit: Int, offset: Int, orderBy: ItemOrder, ...filters): [Item!]!
+  items(limit: Int, offset: Int, orderBy: ItemOrder, id: ID, identifier: String, name: String): [Item!]!
   item(id: ID!): Item
 }
 
@@ -114,6 +114,28 @@ type Mutation {
   createItem(name: String!, description: String): Item!
 }
 ```
+
+## Concepts
+
+The `identifier` field is a URL-safe slug auto-generated from the item `name`
+(e.g. `"My Item"` → `"my-item"`). It is unique and can be used as a stable
+human-readable key for permalinks and filter queries.
+
+## Running tests
+
+The PostgreSQL integration tests require a running Postgres instance:
+
+```bash
+# Start only the database
+docker compose up postgres -d
+
+# Apply schema and run tests
+PGPASSWORD=postgres psql -h localhost -U postgres -d starter -f init.sql
+bash tests/test-postgres.sh
+```
+
+> **Note**: `fraiseql compile` requires FraiseQL v2 (coming soon). Skip this step
+> if running FraiseQL v1.
 
 ## Next steps
 
