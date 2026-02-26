@@ -1,7 +1,7 @@
 [project]
 name        = "starter-minimal"
 version     = "1.0.0"
-description = "Minimal FraiseQL starter — one type, one query, PostgreSQL"
+description = "Minimal FraiseQL starter — one type, two queries, one mutation, PostgreSQL"
 
 [fraiseql]
 schema_file = "schema.json"

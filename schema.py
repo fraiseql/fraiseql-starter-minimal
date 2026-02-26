@@ -11,13 +11,15 @@ Then compile and run:
 """
 
 import fraiseql
+from fraiseql import ID
 
 
 @fraiseql.type
 class Item:
     """A simple item with a name and description."""
 
-    id: int
+    id: ID
+    identifier: str
     name: str
     description: str | None
     created_at: str
@@ -25,15 +27,15 @@ class Item:
 
 @fraiseql.query(
     sql_source="v_item",
-    auto_params={"limit": True, "offset": True, "where": True},
+    auto_params={"limit": True, "offset": True, "where": True, "order_by": True},
 )
 def items(limit: int = 10, offset: int = 0) -> list[Item]:
-    """Get all items with pagination."""
+    """Get all items with pagination, filtering, and ordering."""
     pass
 
 
 @fraiseql.query(sql_source="v_item")
-def item(id: int) -> Item | None:
+def item(id: ID) -> Item | None:
     """Get a single item by ID."""
     pass
 

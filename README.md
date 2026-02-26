@@ -1,5 +1,8 @@
 # fraiseql/starter-minimal
 
+[![CI](https://github.com/fraiseql/fraiseql-starter-minimal/actions/workflows/ci.yml/badge.svg)](https://github.com/fraiseql/fraiseql-starter-minimal/actions/workflows/ci.yml)
+[![Docker](https://ghcr-badge.egpl.dev/fraiseql/fraiseql-starter-minimal/latest_tag?label=ghcr.io)](https://github.com/fraiseql/fraiseql-starter-minimal/pkgs/container/fraiseql-starter-minimal)
+
 The smallest possible FraiseQL project: **one type, two queries, one mutation, PostgreSQL**.
 
 Use this to verify your installation or as a blank canvas.
@@ -10,8 +13,9 @@ Use this to verify your installation or as a blank canvas.
 |------|---------|
 | `schema.py` | Type and query definitions (authoring layer) |
 | `fraiseql.toml` | Project and runtime configuration |
-| `init.sql` | PostgreSQL table, view, and seed data |
+| `init.sql` | PostgreSQL table, view, function, and seed data |
 | `docker-compose.yml` | One-command local stack |
+| `Dockerfile` | Multi-stage image for self-hosting |
 | `.env.example` | Environment variable template |
 
 ## Quickstart (Docker)
@@ -48,44 +52,62 @@ fraiseql run
 ## Example queries
 
 ```graphql
+# List with pagination and ordering
 query {
-  items(limit: 5) {
+  items(limit: 5, offset: 0, orderBy: { createdAt: DESC }) {
     id
+    identifier
+    name
+    createdAt
+  }
+}
+
+# Filter by identifier
+query {
+  items(identifier: "hello") {
+    id
+    identifier
+    name
+  }
+}
+
+# Create an item — returns the full entity, including its generated UUID and identifier
+mutation {
+  createItem(name: "My item", description: "Created via GraphQL") {
+    id
+    identifier
+    name
+    createdAt
+  }
+}
+
+# Fetch by UUID — use the id returned by the mutation above
+query GetItem($id: ID!) {
+  item(id: $id) {
+    id
+    identifier
     name
     description
     createdAt
   }
 }
-
-query {
-  item(id: 1) {
-    id
-    name
-  }
-}
-
-mutation {
-  createItem(name: "My item", description: "Created via GraphQL") {
-    id
-    name
-    createdAt
-  }
-}
+# variables: { "id": "018e4c1a-3f2b-7a9d-b1c8-4d2e5f6a7b8c" }
 ```
 
 ## GraphQL schema generated
 
 ```graphql
 type Item {
-  id: Int!
+  id: ID!
+  identifier: String!
   name: String!
   description: String
   createdAt: String!
 }
 
 type Query {
-  items(limit: Int, offset: Int): [Item!]!
-  item(id: Int!): Item
+  items(limit: Int, offset: Int, orderBy: ItemOrder, ...filters): [Item!]!
+  item(id: ID!): Item
 }
 
 type Mutation {
