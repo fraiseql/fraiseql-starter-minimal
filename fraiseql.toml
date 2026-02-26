@@ -1,0 +1,18 @@
+[project]
+name        = "starter-minimal"
+version     = "1.0.0"
+description = "Minimal FraiseQL starter — one type, one query, PostgreSQL"
+
+[fraiseql]
+schema_file = "schema.json"
+output_file = "schema.compiled.json"
+
+[server]
+host = "0.0.0.0"
+port = 8080
+
+[database]
+url      = "${DATABASE_URL}"
+pool_min = 2
+pool_max = 10
+ssl_mode = "prefer"
