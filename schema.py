@@ -25,10 +25,7 @@ class Item:
     created_at: str
 
 
-@fraiseql.query(
-    sql_source="v_item",
-    auto_params={"limit": True, "offset": True, "where": True, "order_by": True},
-)
+@fraiseql.query(sql_source="v_item")
 def items(limit: int = 10, offset: int = 0) -> list[Item]:
     """Get all items with pagination, filtering, and ordering."""
     pass
